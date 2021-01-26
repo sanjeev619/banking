@@ -1,5 +1,6 @@
 package com.bank.web.auth.entity;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.bank.web.base.AuditableEntity;
 import com.bank.web.employee.entity.Employee;
+import com.bank.web.security.BankGrantedAuthority;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -58,7 +60,13 @@ public class SecurityUser extends AuditableEntity<Long> implements UserDetails{
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		switch (this.userRole) {
+			case SYSTEM_ADMIN:
+				return Arrays.asList(BankGrantedAuthority.SUPER_ADMIN);
+			case ADMIN:
+				return Arrays.asList(BankGrantedAuthority.ADMIN);
+			default:
+				return Arrays.asList(BankGrantedAuthority.EMPLOYEE);
+		}
 	}
 }

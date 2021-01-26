@@ -31,6 +31,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable()
 			.authorizeRequests()
 			.antMatchers("/public/*", "/authenticate").permitAll()
+			.antMatchers("/api/*")
+			.hasAnyAuthority(BankGrantedAuthority.SUPER_ADMIN.getAuthority())
 			.anyRequest().authenticated()
 			.and().sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
