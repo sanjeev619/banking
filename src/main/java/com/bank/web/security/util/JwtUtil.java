@@ -1,4 +1,4 @@
-package com.bank.web.auth.config.util;
+package com.bank.web.security.util;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
-public class JwUtil {
+public class JwtUtil {
 	
 	private String SECRET_KEY = "banksecret";
 	
@@ -45,7 +45,7 @@ public class JwUtil {
 
 	private String createToken(Map<String, Object> claims, String username) {
 		return Jwts.builder().setClaims(claims).setSubject(username).setIssuedAt(new Date())
-				.setExpiration(new Date(System.currentTimeMillis()+ 1000*60*60*1))
+				.setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*1))
 				.signWith(SignatureAlgorithm.HS256, SECRET_KEY)
 				.compact();
 	}

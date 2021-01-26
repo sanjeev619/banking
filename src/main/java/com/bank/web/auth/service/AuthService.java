@@ -14,8 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.bank.web.auth.config.MyUserDetailsService;
-import com.bank.web.auth.config.util.JwUtil;
 import com.bank.web.auth.entity.SecurityUser;
 import com.bank.web.auth.entity.SecurityUser.GlobalRole;
 import com.bank.web.auth.entity.TokenWithExpiry;
@@ -25,6 +23,8 @@ import com.bank.web.auth.model.PasswordForm;
 import com.bank.web.auth.repository.SecurityUserRepository;
 import com.bank.web.auth.repository.TokenWithExpiryRepository;
 import com.bank.web.employee.entity.Employee;
+import com.bank.web.security.MyUserDetailsService;
+import com.bank.web.security.util.JwtUtil;
 
 @Service
 public class AuthService {
@@ -44,7 +44,7 @@ public class AuthService {
 	private MyUserDetailsService userDetailsService;
 	
 	@Autowired
-	private JwUtil jwtUtil;
+	private JwtUtil jwtUtil;
 
 	public SecurityUser addUser(Employee employee, GlobalRole userRole) {
 		Optional<SecurityUser> optionalUser = Optional.empty();

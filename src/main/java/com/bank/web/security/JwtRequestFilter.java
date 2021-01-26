@@ -1,4 +1,4 @@
-package com.bank.web.auth.config;
+package com.bank.web.security;
 
 import java.io.IOException;
 
@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.bank.web.auth.config.util.JwUtil;
+import com.bank.web.security.util.JwtUtil;
 
 @Service
 public class JwtRequestFilter extends OncePerRequestFilter{
@@ -25,7 +25,7 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 	private MyUserDetailsService userDetailsService;
 	
 	@Autowired
-	private JwUtil jwtUtil;
+	private JwtUtil jwtUtil;
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
