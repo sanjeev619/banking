@@ -24,7 +24,7 @@ public class Account extends AuditableEntity<Long>{
 	
 	@Column(unique = true)
 	private String accountNo;
-	private long balance;
+	private double balance;
 	private String branchCode;
 	@Enumerated(EnumType.STRING)
 	private AccountType accountType;
@@ -41,6 +41,18 @@ public class Account extends AuditableEntity<Long>{
 
 	public void update(AccountForm accountForm) {
 		this.branchCode = accountForm.getBranchCode();
+	}
+
+	public void debitBalance(double amount) {
+		balance -= amount;
+	}
+
+	public void creditBalance(double amount) {
+		balance += amount;
+	}
+
+	public boolean hasEnoughBalance(double amount) {
+		return this.balance >= amount;
 	}
 	
 	
