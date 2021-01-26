@@ -14,4 +14,6 @@ public interface CustomerAccountMapRepository extends JpaRepository<CustomerAcco
 
 	Optional<CustomerAccountMap> findByCustomerIdAndAccountIdAndIsActiveTrue(long customerId, long accountId);
 
+	List<Customer> findByAccountIdAndIsActiveTrue(long accountId);
+
 }

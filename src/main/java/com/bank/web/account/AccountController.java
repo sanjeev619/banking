@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.web.account.entity.Account;
 import com.bank.web.account.model.AccountForm;
+import com.bank.web.account.model.AccountStatement;
 import com.bank.web.account.service.AccountService;
 
 @RequestMapping("api")
@@ -36,4 +37,13 @@ public class AccountController {
 		return accountService.addAccount(accountForm);
 	}
 
+	@GetMapping("account/{accountId}/balance")
+	public Double getAccountBalance(@PathVariable long accountId) {
+		return accountService.getAccountBalance(accountId);
+	}
+	
+	@GetMapping("account/{accountId}/statement")
+	public AccountStatement getAccountStatement(@PathVariable long accountId) {
+		return accountService.getAccountStatement(accountId);
+	}
 }

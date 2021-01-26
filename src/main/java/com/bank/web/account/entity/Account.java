@@ -1,12 +1,16 @@
 package com.bank.web.account.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Transient;
 
 import com.bank.web.account.model.AccountForm;
 import com.bank.web.base.AuditableEntity;
+import com.bank.web.customer.entity.Customer;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,6 +33,9 @@ public class Account extends AuditableEntity<Long>{
 	@Enumerated(EnumType.STRING)
 	private AccountType accountType;
 	private boolean isActive;
+	
+	@Transient
+	private List<Customer> customers;
 	
 	
 	public static Account from(AccountForm accountForm) {
