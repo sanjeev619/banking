@@ -7,12 +7,20 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.bank.web.auth.config.MyUserDetailsService;
+import com.bank.web.auth.config.util.JwUtil;
 import com.bank.web.auth.entity.SecurityUser;
 import com.bank.web.auth.entity.SecurityUser.GlobalRole;
 import com.bank.web.auth.entity.TokenWithExpiry;
+import com.bank.web.auth.model.AuthenticationRequest;
+import com.bank.web.auth.model.AuthenticationResponse;
 import com.bank.web.auth.model.PasswordForm;
 import com.bank.web.auth.repository.SecurityUserRepository;
 import com.bank.web.auth.repository.TokenWithExpiryRepository;
@@ -21,25 +29,35 @@ import com.bank.web.employee.entity.Employee;
 @Service
 public class AuthService {
 	
-	private static String SET_PASSWORD_URL = "http://localhost/public/set-password/%s";
+	private static String SET_PASSWORD_URL = "http://localhost/public/set-password/%s"; 
 	
 	@Autowired
 	private SecurityUserRepository securityUserRepository;
 
 	@Autowired
 	private TokenWithExpiryRepository tokenWithExpiryRepository;
+	
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private MyUserDetailsService userDetailsService;
+	
+	@Autowired
+	private JwUtil jwtUtil;
 
 	public SecurityUser addUser(Employee employee, GlobalRole userRole) {
 		Optional<SecurityUser> optionalUser = Optional.empty();
 		if(employee.getSecurityUserId() > 0) {
 			optionalUser = securityUserRepository.findById(employee.getSecurityUserId());
 		}
-		System.out.println(employee.getId());
 		if(! optionalUser.isPresent())
 			optionalUser = Optional.of(SecurityUser.from(employee, userRole));
+		
 		SecurityUser securityUser = optionalUser.get();
-		securityUser.setDisabled(false);
+		securityUser.setEnabled(true);
 		securityUser = securityUserRepository.save(securityUser);
+		
 		generateToken(securityUser);
 		return securityUser;
 	}
@@ -93,6 +111,18 @@ public class AuthService {
 	
 	public boolean disablToken(long tokenId) {
 		return tokenWithExpiryRepository.disableToken(tokenId) > 0;
+	}
+
+	public AuthenticationResponse authenticate(AuthenticationRequest authenicationRequest) throws Exception {
+		try {
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenicationRequest.getUsername(), authenicationRequest.getPassword()));
+		} catch (BadCredentialsException e) {
+			throw new Exception("Incorrect username or password", e);
+		}
+		
+		UserDetails userDetails = userDetailsService.loadUserByUsername(authenicationRequest.getUsername());
+		String jwt = jwtUtil.generateToken(userDetails);
+		return new AuthenticationResponse(jwt);
 	}
 
 	

@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bank.web.auth.model.AuthenticationRequest;
+import com.bank.web.auth.model.AuthenticationResponse;
 import com.bank.web.auth.model.PasswordForm;
 import com.bank.web.auth.service.AuthService;
 
@@ -14,6 +16,11 @@ public class AuthController {
 	
 	@Autowired
 	private AuthService authService;
+	
+	@PostMapping("authenticate")
+	public AuthenticationResponse authenticate(@RequestBody AuthenticationRequest authenicationRequest) throws Exception {
+		return authService.authenticate(authenicationRequest);
+	}
 	
 	@PostMapping("public/set-password/{token}")
 	public String setPassword(@PathVariable String token, @RequestBody PasswordForm passwordForm) {
