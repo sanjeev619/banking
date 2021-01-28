@@ -12,6 +12,9 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.bank.web.auth.entity.SecurityUser;
+import com.bank.web.auth.repository.SecurityUserRepository;
+
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
@@ -31,8 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable()
 			.authorizeRequests()
 			.antMatchers("/public/*", "/authenticate").permitAll()
-			.antMatchers("/api/*")
-			.hasAnyAuthority(BankGrantedAuthority.SUPER_ADMIN.getAuthority())
+			.antMatchers("/api/employee", "/api/employee/*")
+			.hasAnyAuthority(BankGrantedAuthority.ADMIN.getAuthority())
 			.anyRequest().authenticated()
 			.and().sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

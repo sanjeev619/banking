@@ -3,6 +3,7 @@ package com.bank.web.auth.entity;
 import java.util.Arrays;
 import java.util.Collection;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -33,6 +34,7 @@ public class SecurityUser extends AuditableEntity<Long> implements UserDetails{
 		SYSTEM_ADMIN, ADMIN, EMPLOYEE
 	}
 	
+	@Column(unique = true)
 	private String username;
 	private String password;
 	@Enumerated(EnumType.STRING)
@@ -51,7 +53,6 @@ public class SecurityUser extends AuditableEntity<Long> implements UserDetails{
 		securityUser.userRole = userRole;
 		securityUser.referenceId = employee.getId();
 		
-		securityUser.isEnabled = true;
 		securityUser.isAccountNonExpired = true;
 		securityUser.isAccountNonLocked = true;
 		securityUser.isCredentialsNonExpired = true;
@@ -62,11 +63,23 @@ public class SecurityUser extends AuditableEntity<Long> implements UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		switch (this.userRole) {
 			case SYSTEM_ADMIN:
-				return Arrays.asList(BankGrantedAuthority.SUPER_ADMIN);
+				return Arrays.asList(BankGrantedAuthority.SUPER_ADMIN, BankGrantedAuthority.ADMIN, BankGrantedAuthority.EMPLOYEE);
 			case ADMIN:
-				return Arrays.asList(BankGrantedAuthority.ADMIN);
+				return Arrays.asList(BankGrantedAuthority.ADMIN, BankGrantedAuthority.EMPLOYEE);
 			default:
 				return Arrays.asList(BankGrantedAuthority.EMPLOYEE);
 		}
+	}
+
+	public static SecurityUser defaultMasterUser() {
+		SecurityUser securityUser = new SecurityUser();
+		securityUser.username = "admin";
+		securityUser.password = "Qwerty@123";
+		securityUser.userRole = GlobalRole.SYSTEM_ADMIN;
+		securityUser.isEnabled = true;
+		securityUser.isAccountNonExpired = true;
+		securityUser.isAccountNonLocked = true;
+		securityUser.isCredentialsNonExpired = true;
+		return securityUser;
 	}
 }

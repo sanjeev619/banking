@@ -1,6 +1,7 @@
 package com.bank.web.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,11 @@ public class AuthController {
 	
 	@Autowired
 	private AuthService authService;
+	
+	@GetMapping("public/create-default-user")
+	public String createDefaultUser() {
+		return authService.createDefaultUser();
+	}
 	
 	@PostMapping("authenticate")
 	public AuthenticationResponse authenticate(@RequestBody AuthenticationRequest authenicationRequest) throws Exception {

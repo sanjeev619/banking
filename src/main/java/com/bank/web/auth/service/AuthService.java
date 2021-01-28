@@ -55,7 +55,6 @@ public class AuthService {
 			optionalUser = Optional.of(SecurityUser.from(employee, userRole));
 		
 		SecurityUser securityUser = optionalUser.get();
-		securityUser.setEnabled(true);
 		securityUser = securityUserRepository.save(securityUser);
 		
 		generateToken(securityUser);
@@ -94,7 +93,7 @@ public class AuthService {
 	@Transactional
 	public String setPassword(String token, PasswordForm passwordForm) {
 		TokenWithExpiry tokenWithExpiry = getTokenWithExpiry(token);
-		SecurityUser securityUser = securityUserRepository.findById(tokenWithExpiry.getUserId()).orElseThrow(() -> new RuntimeException("User nor found"));
+		SecurityUser securityUser = securityUserRepository.findById(tokenWithExpiry.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
 		
 		securityUser.setPassword(passwordForm.getPassword());
 		securityUser.setEnabled(true);
@@ -123,6 +122,17 @@ public class AuthService {
 		UserDetails userDetails = userDetailsService.loadUserByUsername(authenicationRequest.getUsername());
 		String jwt = jwtUtil.generateToken(userDetails);
 		return new AuthenticationResponse(jwt);
+	}
+
+	public String createDefaultUser() {
+		System.out.println("Creating Default User");
+		try {
+			securityUserRepository.save(SecurityUser.defaultMasterUser());
+		} catch (Exception e) {
+			System.out.println("Created Default Use already created");
+		}
+		System.out.println("Created Default User");
+		return "success";
 	}
 
 	
