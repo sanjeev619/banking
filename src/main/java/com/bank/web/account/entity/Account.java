@@ -1,6 +1,7 @@
 package com.bank.web.account.entity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,6 +42,7 @@ public class Account extends AuditableEntity<Long>{
 	public static Account from(AccountForm accountForm) {
 		Account account = new Account();
 		account.accountType = accountForm.getAccountType();
+		account.accountNo = accountForm.getAccountNo();
 		account.update(accountForm);
 		account.isActive = true;
 		return account;
@@ -60,6 +62,12 @@ public class Account extends AuditableEntity<Long>{
 
 	public boolean hasEnoughBalance(double amount) {
 		return this.balance >= amount;
+	}
+
+	public String getCustomerNames() {
+		if(customers == null)
+			return "";
+		return customers.stream().map(customer -> customer.getFullName()).collect(Collectors.joining(", "));
 	}
 	
 	

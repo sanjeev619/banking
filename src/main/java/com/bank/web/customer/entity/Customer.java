@@ -7,6 +7,7 @@ import javax.persistence.Enumerated;
 import com.bank.web.base.AuditableEntity;
 import com.bank.web.customer.model.CustomerForm;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Customer extends AuditableEntity<Long>{
 	
@@ -38,6 +40,7 @@ public class Customer extends AuditableEntity<Long>{
 	public static Customer from(CustomerForm customerForm) {
 		Customer customer = new Customer();
 		customer.update(customerForm);
+		customer.setActive(true);
 		return customer;
 	}
 
@@ -50,6 +53,14 @@ public class Customer extends AuditableEntity<Long>{
 		this.address = customerForm.getAddress();
 		this.panNo = customerForm.getPanNo();
 		this.aadhaarNo = customerForm.getAadhaarNo();
+	}
+
+	public String getFullName() {
+		if(firstName == null)
+			firstName = "";
+		if(lastName == null)
+			lastName = "";
+		return (firstName+" "+lastName).trim();
 	}
 	
 	

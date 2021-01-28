@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountStatement {
-	private Account account;
+	private String transactionPeriod;
 	private List<TransactionEvent> transactionEvents;
+	private Account account;
 }

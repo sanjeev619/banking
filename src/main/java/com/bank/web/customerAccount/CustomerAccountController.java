@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.web.customerAccount.entity.CustomerAccountMap;
 import com.bank.web.customerAccount.model.CustomerAccountMapForm;
+import com.bank.web.customerAccount.model.DepositForm;
 import com.bank.web.customerAccount.model.TransferForm;
 import com.bank.web.customerAccount.service.BankingService;
 
@@ -26,5 +27,10 @@ public class CustomerAccountController {
 	@PostMapping("transfer")
 	public boolean transfer(@RequestBody TransferForm transferForm) {
 		return bankingService.transfer(transferForm);
+	}
+	
+	@PostMapping("deposit")
+	public boolean depositMoney(@RequestBody DepositForm depositForm) {
+		return bankingService.depositMoney(depositForm);
 	}
 }

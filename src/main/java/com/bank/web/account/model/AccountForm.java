@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class AccountForm {
 	private String accountNo;
 	private String branchCode;
-	private AccountType AccountType;
+	private AccountType accountType = AccountType.SAVINGS;
 }

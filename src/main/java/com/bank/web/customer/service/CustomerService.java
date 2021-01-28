@@ -23,9 +23,17 @@ public class CustomerService {
 	public List<Customer> getAllCustomers() {
 		return customerRepository.findByIsActiveTrue();
 	}
+	
+	public Customer getCustomerById(long customerId) {
+		Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+		if(! optionalCustomer.isPresent()) {
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Customer Not Found For the given Id "+customerId);
+		}
+		return optionalCustomer.get();
+	}
 
 	public Customer getCustomer(long customerId) {
-		Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+		Optional<Customer> optionalCustomer = customerRepository.findByIdAndIsActiveTrue(customerId);
 		if(! optionalCustomer.isPresent()) {
 			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Customer Not Found For the given Id "+customerId);
 		}
@@ -41,7 +49,7 @@ public class CustomerService {
 
 	@Transactional
 	public Customer updateCustomer(long customerId, CustomerForm customerForm) {
-		Customer customer = getCustomer(customerId);
+		Customer customer = getCustomerById(customerId);
 		customer.update(customerForm);
 		return customerRepository.save(customer);
 	}
